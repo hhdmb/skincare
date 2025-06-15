@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panier - Skin Care</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #fff8f0;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+.navbar {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  position: relative; /* important pour positionner le menu mobile */
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #ff914d;
+  user-select: none;
+}
+
+.logo span {
+  font-weight: 400;
+  color: #ff7033;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-weight: 500;
+  color: #444;
+  position: relative;
+  padding-bottom: 3px;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links .active {
+  color: #ff914d;
+}
+
+.nav-links .active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: #ff914d;
+  border-radius: 2px;
+}
+
+/* --- Menu burger --- */
+.burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.burger-line {
+  width: 25px;
+  height: 3px;
+  background-color: #ff914d;
+  border-radius: 2px;
+}
+
+/* Responsive - petit écran */
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 60px; /* hauteur estimée de la navbar */
+    right: 0;
+    height: calc(100vh - 60px);
+    width: 220px;
+    background-color: #fff8f0;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem 2rem;
+    gap: 1.5rem;
+    box-shadow: -3px 0 10px rgba(0,0,0,0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+  }
+
+  .nav-links.active {
+    transform: translateX(0);
+  }
+
+  .burger {
+    display: flex;
+  }
+}
+
+
+    main {
+      padding: 2rem 1rem;
+      max-width: 900px;
+      margin: auto;
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    h1 {
+      color: #ff914d;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 600;
+      font-size: 2.2rem;
+      user-select: none;
+    }
+
+    #cart-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 120px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.07);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .cart-item.removing {
+      opacity: 0;
+      transform: translateX(100%);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .cart-item img {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-right: 1.25rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      user-select: none;
+    }
+
+    .cart-item-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      user-select: none;
+    }
+
+    .cart-item-info .name {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #222;
+    }
+
+    .cart-item-info .price {
+      color: #ff914d;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .cart-item button {
+      background: #ff5a3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.45rem 1.1rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    .cart-item button:hover {
+      background: #e94b2f;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #ff6a00;
+      margin-top: 2.5rem;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+
+    #empty-msg {
+      text-align: center;
+      color: #999;
+      font-size: 1.15rem;
+      margin-top: 2rem;
+      user-select: none;
+    }
+
+    .clear-cart-btn {
+      display: block;
+      margin: 2rem auto 0;
+      background: #ff914d;
+      color: white;
+      border: none;
+      padding: 0.7rem 2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(255, 145, 77, 0.35);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    .clear-cart-btn:hover {
+      background: #ff6a00;
+      box-shadow: 0 8px 20px rgba(255, 106, 0, 0.5);
+    }
+
+footer {
+  background-color: #ffb347; /* orange clair */
+  color: #fff;
+  padding: 40px 20px 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  box-shadow: inset 0 3px 8px rgb(255 255 255 / 0.3);
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto 30px;
+}
+
+.footer-section {
+  flex: 1 1 250px;
+  margin: 10px 25px;
+}
+
+.footer-links h3,
+.footer-contact h3,
+.footer-social h3 {
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links ul li {
+  margin-bottom: 10px;
+}
+
+.footer-links ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.footer-links ul li a:hover {
+  color: #333;
+  text-decoration: underline;
+}
+
+.footer-contact p {
+  margin-bottom: 10px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.footer-contact a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.footer-contact a:hover {
+  color: #333;
+  text-decoration: underline;
+}
+
+.footer-social .social-icons {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.footer-social .social-icons a svg {
+  transition: transform 0.3s ease, fill 0.3s ease;
+  cursor: pointer;
+}
+
+.footer-social .social-icons a:hover svg {
+  transform: scale(1.3);
+  fill: #333 !important;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  font-weight: 600;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+.footer-bottom a {
+  color: #fff;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.footer-bottom a:hover {
+  color: #333;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .footer-section {
+    margin: 20px 0;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .cart-item img {
+        margin-bottom: 0.7rem;
+      }
+      .cart-item button {
+        align-self: flex-end;
+      }
+      main {
+        padding: 1.5rem 1rem;
+      }
+      .total {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+ <header>
+<nav class="navbar">
+  <div class="logo">Skin<span>Care</span></div>
+
+  <button class="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+    <span class="burger-line"></span>
+    <span class="burger-line"></span>
+    <span class="burger-line"></span>
+  </button>
+
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html" >Accueil</a></li>
+    <li><a href="produits.html" >Nos produits</a></li>
+    <li><a href="panier.html" class="active">Panier</a></li>
+  </ul>
+</nav>
+
+
+  </header>
+    <script>
+        const burger = document.querySelector('.burger');
+const navLinks = document.querySelector('.nav-links');
+
+burger.addEventListener('click', () => {
+  const expanded = burger.getAttribute('aria-expanded') === 'true' || false;
+  burger.setAttribute('aria-expanded', !expanded);
+  navLinks.classList.toggle('active');
+});
+
+    </script>
+
+  <!-- MAIN -->
+  <main>
+    <h1>Votre panier</h1>
+    <div id="cart-items" aria-live="polite" aria-relevant="all"></div>
+    <div id="empty-msg" hidden>Votre panier est vide.</div>
+    <div class="total" id="total" aria-atomic="true">Total : 0 €</div>
+    <button class="clear-cart-btn" id="clear-cart" aria-label="Vider le panier">Vider le panier</button>
+  </main>
+
+<footer>
+  <div class="footer-container">
+    <!-- Liens rapides -->
+    <div class="footer-section footer-links">
+      <h3>Liens rapides</h3>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="produits.html">Nos produits</a></li>
+        <li><a href="panier.html">Panier</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="footer-section footer-contact">
+      <h3>Contactez-nous</h3>
+      <p>123 Rue de la Beauté, 75001 Paris, France</p>
+      <p>Téléphone : <a href="tel:+33123456789">+33 1 23 45 67 89</a></p>
+      <p>Email : <a href="mailto:contact@skincare.fr">contact@skincare.fr</a></p>
+    </div>
+
+    <!-- Réseaux sociaux -->
+    <div class="footer-section footer-social">
+      <h3>Suivez-nous</h3>
+      <div class="social-icons">
+        <a href="#" aria-label="Facebook" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#4267B2" width="24" height="24">
+            <path d="M22.675 0h-21.35C.597 0 0 .6 0 1.333v21.333C0 23.4.597 24 1.325 24H12v-9.294H9.294v-3.625H12V8.413c0-2.675 1.628-4.138 4.006-4.138 1.14 0 2.123.084 2.408.122v2.79H16.17c-1.27 0-1.517.603-1.517 1.49v1.954h3.031l-.395 3.625h-2.636V24h5.174c.728 0 1.324-.6 1.324-1.333V1.333C24 .6 23.403 0 22.675 0z"/>
+          </svg>
+        </a>
+        <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#E1306C" width="24" height="24">
+            <path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zm0 1.5A4.25 4.25 0 003.5 7.75v8.5A4.25 4.25 0 007.75 20.5h8.5a4.25 4.25 0 004.25-4.25v-8.5a4.25 4.25 0 00-4.25-4.25h-8.5zM12 7a5 5 0 110 10 5 5 0 010-10zm0 1.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm5.75-.88a1.12 1.12 0 110 2.25 1.12 1.12 0 010-2.25z"/>
+          </svg>
+        </a>
+        <a href="#" aria-label="Twitter" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="#1DA1F2" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M23.954 4.569c-.885.39-1.83.654-2.825.775a4.94 4.94 0 002.163-2.724 9.865 9.865 0 01-3.127 1.196 4.917 4.917 0 00-8.38 4.482A13.944 13.944 0 011.671 3.15 4.917 4.917 0 003.195 9.72a4.9 4.9 0 01-2.228-.616c-.054 2.281 1.581 4.415 3.949 4.89a4.935 4.935 0 01-2.224.085 4.922 4.922 0 004.6 3.417A9.868 9.868 0 010 19.54a13.94 13.94 0 007.548 2.209c9.057 0 14.01-7.514 14.01-14.034 0-.213-.005-.425-.015-.636a9.936 9.936 0 002.46-2.548l-.001-.002z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 SkinCare. Tous droits réservés.</p>
+    <p>Réalisé par <a href="#" target="_blank" rel="noopener">HD Digital</a></p>
+  </div>
+</footer>
+
+  <!-- JS PANIER -->
+  <script>
+    const cartContainer = document.getElementById('cart-items');
+    const totalElement = document.getElementById('total');
+    const emptyMsg = document.getElementById('empty-msg');
+    const clearBtn = document.getElementById('clear-cart');
+
+    // Exemples d'images placeholder (tu peux remplacer par des vraies URLs)
+    const placeholderImages = [
+      "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=60&q=80",
+      "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=60&q=80",
+      "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=60&q=80"
+    ];
+
+    // Charge et affiche le panier
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cartContainer.innerHTML = "";
+
+      if(cart.length === 0) {
+        emptyMsg.hidden = false;
+        totalElement.textContent = "Total : 0 €";
+        clearBtn.disabled = true;
+        clearBtn.style.opacity = "0.5";
+        return;
+      }
+      emptyMsg.hidden = true;
+      clearBtn.disabled = false;
+      clearBtn.style.opacity = "1";
+
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const itemEl = document.createElement("div");
+        itemEl.className = "cart-item";
+        // Choix d'image aléatoire placeholder
+        const imgSrc = item.image || placeholderImages[index % placeholderImages.length];
+        itemEl.innerHTML = `
+          <img src="${imgSrc}" alt="${item.name}" loading="lazy" />
+          <div class="cart-item-info">
+            <span class="name">${item.name}</span>
+            <span class="price">${item.price.toFixed(2)} €</span>
+          </div>
+          <button aria-label="Supprimer ${item.name} du panier" data-index="${index}">Supprimer</button>
+        `;
+        cartContainer.appendChild(itemEl);
+        total += item.price;
+
+        // Animation suppression
+        const btn = itemEl.querySelector('button');
+        btn.addEventListener('click', () => {
+          // Animation sortie
+          itemEl.classList.add('removing');
+          setTimeout(() => {
+            removeItem(index);
+          }, 400);
+        });
+      });
+
+      animateTotal(total);
+    }
+
+    // Supprimer un article par index
+    function removeItem(index) {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      if(index < 0 || index >= cart.length) return;
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    // Vider le panier
+    clearBtn.addEventListener('click', () => {
+      if(confirm("Voulez-vous vraiment vider votre panier ?")) {
+        localStorage.removeItem("cart");
+        loadCart();
+      }
+    });
+
+    // Animation du total qui compte de façon fluide
+    let animationFrame;
+    function animateTotal(newTotal) {
+      cancelAnimationFrame(animationFrame);
+      const duration = 400; // ms
+      const startTime = performance.now();
+      const oldTotal = parseFloat(totalElement.textContent.replace(/[^\d\.]/g, '')) || 0;
+
+      function animate(time) {
+        let elapsed = time - startTime;
+        if(elapsed > duration) elapsed = duration;
+        const currentTotal = oldTotal + (newTotal - oldTotal) * (elapsed / duration);
+        totalElement.textContent = `Total : ${currentTotal.toFixed(2)} €`;
+        if(elapsed < duration) {
+          animationFrame = requestAnimationFrame(animate);
+        }
+      }
+      animationFrame = requestAnimationFrame(animate);
+    }
+
+    loadCart();
+  </script>
+</body>
+</html>
